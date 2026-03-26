@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group = 'ru.spdrug'
+version = '1.3.6'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.processResources {
+    filteringCharset = 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand 'version': project.version
+    }
+}
+
+jar {
+    archiveBaseName = 'SPdrug'
+    manifest {
+        attributes(
+                'Implementation-Title': 'SPdrug',
+                'Implementation-Version': archiveVersion.get(),
+                'Implementation-Vendor': 'SteepStudio / Steepin'
+        )
+    }
+}

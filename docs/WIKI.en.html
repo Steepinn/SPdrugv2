@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPdrug — documentation (English)</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --text: #e6edf3;
+      --muted: #8b9cb3;
+      --accent: #58a6ff;
+      --border: #30363d;
+      --code-bg: #21262d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--text);
+      background: var(--bg);
+    }
+    .wrap {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+    .lang {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      color: var(--muted);
+    }
+    .lang a { font-weight: 600; }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      margin: 2.25rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--accent);
+    }
+    h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; }
+    p { margin: 0.65rem 0; }
+    ul, ol { margin: 0.5rem 0; padding-left: 1.35rem; }
+    li { margin: 0.35rem 0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, kbd {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.12em 0.4em;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.88rem;
+    }
+    pre code { border: 0; padding: 0; background: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.92rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--surface); color: var(--accent); font-weight: 600; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+    nav.toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    nav.toc ol { margin: 0; padding-left: 1.25rem; }
+    nav.toc li { margin: 0.3rem 0; }
+    .note {
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0 0.5rem 1rem;
+      margin: 1rem 0;
+      background: rgba(88, 166, 255, 0.06);
+      border-radius: 0 6px 6px 0;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="lang"><a href="WIKI.html">Русская версия</a> · <a href="WIKI.md">WIKI.md</a></p>
+
+    <h1>SPdrug — plugin wiki</h1>
+    <p class="lead">
+      Plugin for <strong>Paper 1.21</strong>: laboratory (synthesis), greenhouse (drying), field crops, drugs with effects, cigarettes.
+      Source of truth — <code>src/main/resources/config.yml</code> and code <code>ru.spdrug</code>.
+    </p>
+    <p class="lead"><strong>Jar version:</strong> see <code>build.gradle</code> (<code>version = …</code>).</p>
+
+    <nav class="toc" aria-label="Contents">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#install">Requirements and installation</a></li>
+        <li><a href="#perms">Permissions</a></li>
+        <li><a href="#commands">Commands</a></li>
+        <li><a href="#items">Items and blocks</a></li>
+        <li><a href="#loop">Gameplay loop</a></li>
+        <li><a href="#lab">Laboratory</a></li>
+        <li><a href="#farm">Greenhouse and drying</a></li>
+        <li><a href="#field">Field crops</a></li>
+        <li><a href="#drugs">Drugs and cigarettes</a></li>
+        <li><a href="#config">Configuration</a></li>
+        <li><a href="#ids">ID reference</a></li>
+        <li><a href="#faq">Troubleshooting</a></li>
+        <li><a href="#license">License</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="install">Requirements and installation</h2>
+    <ul>
+      <li>Server: <strong>Paper</strong> (API <strong>1.21</strong>, project uses <code>paper-api:1.21.1-R0.1-SNAPSHOT</code>).</li>
+      <li><strong>Java 21</strong> (<code>build.gradle</code>).</li>
+      <li>Build: <code>gradlew build</code> in project root → <code>build/libs/SPdrug-&lt;version&gt;.jar</code>.</li>
+      <li>Place jar in <code>plugins/</code>, restart server.</li>
+      <li>First run creates <code>plugins/SPdrug/config.yml</code>. After edits: <kbd>/spdrug reload</kbd> (needs <code>spdrug.admin</code>).</li>
+    </ul>
+
+    <h2 id="perms">Permissions</h2>
+    <table>
+      <thead>
+        <tr><th>Permission</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>spdrug.admin</code></td><td><kbd>/spdrug give …</kbd>, <kbd>/spdrug reload</kbd> (default: OP)</td></tr>
+        <tr><td><code>spdrug.book</code></td><td>Book: <kbd>/spdrug book</kbd> or <kbd>/spdrug give book</kbd> (default: everyone)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="commands">Commands</h2>
+    <p><kbd>/spdrug book</kbd> — any player with <code>spdrug.book</code>. Other <kbd>give</kbd> and <kbd>reload</kbd> — <code>spdrug.admin</code> only. Items go to inventory (overflow drops).</p>
+    <p>Drug recipes and effect tables: <a href="PREPARATION.html">PREPARATION.html</a>.</p>
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>/spdrug reload</kbd></td><td>Reload config, chemistry and drug recipes, crafts.</td></tr>
+        <tr><td><kbd>/spdrug book</kbd></td><td>Recipe book (<code>spdrug.book</code> or admin).</td></tr>
+        <tr><td><kbd>/spdrug give lab</kbd></td><td>Laboratory placer.</td></tr>
+        <tr><td><kbd>/spdrug give farm</kbd></td><td>Greenhouse placer (composter + zone).</td></tr>
+        <tr><td><kbd>/spdrug give book</kbd></td><td>Same as book (<code>spdrug.book</code> or admin).</td></tr>
+        <tr><td><kbd>/spdrug give seeds</kbd></td><td>All special seeds.</td></tr>
+        <tr><td><kbd>/spdrug give raws</kbd></td><td>All raw types (<code>items.herb-raw-types</code>).</td></tr>
+        <tr><td><kbd>/spdrug give dried</kbd></td><td>All dried batches (<code>items.dried-batch-types</code>).</td></tr>
+        <tr><td><kbd>/spdrug give chemicals</kbd></td><td>All chemistry from <code>chemicals</code>.</td></tr>
+        <tr><td><kbd>/spdrug give chemical &lt;id&gt;</kbd></td><td>One component, e.g. <code>hc</code>, <code>me</code>.</td></tr>
+        <tr><td><kbd>/spdrug give drugs</kbd></td><td>All drugs from <code>drugs</code>.</td></tr>
+        <tr><td><kbd>/spdrug give drug &lt;id&gt;</kbd></td><td>One drug, e.g. <code>meth</code>, <code>cocaine</code>.</td></tr>
+        <tr><td><kbd>/spdrug give all</kbd></td><td>Full test kit.</td></tr>
+      </tbody>
+    </table>
+    <p>In-game hint: <kbd>/spdrug</kbd> with no arguments.</p>
+
+    <h2 id="items">Items and blocks</h2>
+    <p>Settings: <code>blocks.*</code>, <code>item-materials.*</code>, <code>items.*</code> in <code>config.yml</code>.</p>
+    <ul>
+      <li><strong>Laboratory</strong> — right-click to place lab block (default <code>SMOKER</code>), synthesis GUI.</li>
+      <li><strong>Greenhouse</strong> — composter + zone <code>farm.horizontal-radius</code>, <code>farm.vertical-range</code>.</li>
+      <li><strong>Growth watch</strong> — right-click grown field fern: progress and boost.</li>
+      <li><strong>Raw / dried batch</strong> — tagged items; default materials <code>DRIED_KELP</code> / <code>NETHER_WART</code> must match <code>recipe</code> for drugs with dried slot rules.</li>
+      <li><strong>Drug</strong> — right-click: effects, title, boss bar, bad trip, overdose.</li>
+      <li><strong>Cigarette</strong> — empty from paper, charge with tobacco product; puff gives short <strong>regen</strong> (<code>cigarette.effect-ticks</code>).</li>
+    </ul>
+
+    <h2 id="loop">Gameplay loop</h2>
+    <ol>
+      <li>Special seeds (grass or <kbd>/spdrug give seeds</kbd>).</li>
+      <li>Plant on <strong>farmland</strong> → fern; <strong>glowstone at Y+2</strong> speeds growth and boosts mature harvest.</li>
+      <li>Break mature plant → raw <code>cannabis</code> / <code>cocaine</code> / <code>tobacco</code>.</li>
+      <li>In greenhouse zone, right-click composter with raw → <strong>drying</strong> (minigame).</li>
+      <li>Dried batch + chemistry in lab → drug or intermediates.</li>
+    </ol>
+    <p>Wheat in the greenhouse at full age drops <strong>cannabis</strong> raw — see <code>SPdrugListener</code>.</p>
+
+    <h2 id="lab">Laboratory</h2>
+    <ul>
+      <li>Reagents <strong>left to right</strong>, order matches recipe.</li>
+      <li>Match via <code>recipe-keys</code>: <code>CHEM:&lt;id&gt;</code> (chemistry item) and <code>MAT:MATERIAL</code>.</li>
+      <li><code>first-slot-must-be-dried-batch: true</code> — slot 1 must be plugin <strong>dried batch</strong>, not a plain item of same type. <code>required-dried-type</code> — type <code>dried_batch:&lt;type&gt;</code>.</li>
+      <li><code>recipe</code> — material check per slot; length and order = GUI layout.</li>
+      <li>After start — hold stability (LMB on lab). Wrong recipe or failure → lab destroyed (<code>laboratory.explosion-*</code>).</li>
+      <li>Multiple full sets in slots → scaled output, remainder returned.</li>
+    </ul>
+
+    <h2 id="farm">Greenhouse and drying</h2>
+    <ul>
+      <li>Zone: square around composter; with <code>horizontal-radius: 2</code> side is <strong>5</strong>.</li>
+      <li>Drying: raw in main or off hand, right-click composter; duration <code>farm.drying-duration-ticks</code>.</li>
+    </ul>
+
+    <h2 id="field">Field crops (seeds)</h2>
+    <ul>
+      <li>Plant <strong>only on farmland</strong> (<code>FARMLAND</code>); otherwise <code>messages.field-herb-seed-need-farmland</code>.</li>
+      <li>Before <strong>maturity</strong>, breaking drops <strong>1</strong> special <strong>seed</strong> of the same type (no raw). When <strong>mature</strong>, <strong>1</strong> or <strong>2</strong> raw with glowstone boost.</li>
+      <li>No untyped “generic” raw/dried items: greenhouse wheat and fallbacks use <strong>cannabis</strong>; <kbd>give raws</kbd> / <kbd>give dried</kbd> only list <code>items.herb-raw-types</code> / <code>items.dried-batch-types</code>.</li>
+      <li><code>farm.field-herb-grow-duration-seconds</code> — base grow time.</li>
+      <li><code>farm.field-herb-grow-speed-multiplier</code> — higher = faster (time ÷ multiplier).</li>
+      <li>Glowstone <strong>Y+2</strong> above plant — speed and mature yield bonus.</li>
+    </ul>
+
+    <h2 id="drugs">Drugs and cigarettes</h2>
+    <ul>
+      <li>In <code>drugs</code>: <code>positive-effects</code>, <code>negative-effects</code>, <code>bad-trip-chance</code>; overdose — <code>drug-use.overdose</code>.</li>
+      <li><code>drug-use</code>: title, boss bar, bad trip damage (<code>bad-trip-damage-min/max</code>), flashes (<code>screen-flash-count</code>, interval ticks; <code>0</code> = off).</li>
+      <li>Cigarette: <code>cigarette.max-uses</code>, <code>cigarette.effect-ticks</code> — REGENERATION I duration per puff.</li>
+    </ul>
+
+    <h2 id="config">Configuration (sections)</h2>
+    <table>
+      <thead>
+        <tr><th>Section</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>general</code></td><td>Boss bar; <code>language</code>: default <code>en</code>, use <code>ru</code> for Russian + reload</td></tr>
+        <tr><td><code>blocks</code></td><td>Lab and farm blocks</td></tr>
+        <tr><td><code>item-materials</code></td><td>Plugin item materials</td></tr>
+        <tr><td><code>farm</code></td><td>Greenhouse, drying, field growth; default grass seed chance 10%</td></tr>
+        <tr><td><code>laboratory</code></td><td>Synthesis, explosion</td></tr>
+        <tr><td><code>crafting</code></td><td>Shapeless crafts</td></tr>
+        <tr><td><code>messages</code>, <code>gui</code>, <code>bossbar</code>, <code>items</code></td><td>Text and GUI</td></tr>
+        <tr><td><code>drug-use</code></td><td>Use effects, overdose</td></tr>
+        <tr><td><code>cigarette</code></td><td>Puffs and effect ticks</td></tr>
+        <tr><td><code>commands</code></td><td>Command messages</td></tr>
+        <tr><td><code>chemicals</code></td><td>Chemistry and recipes</td></tr>
+        <tr><td><code>drugs</code></td><td>Drugs</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Color codes in strings: <code>&amp;</code> prefix like Minecraft classic codes.</p>
+
+    <h2 id="ids">ID reference</h2>
+    <p><strong>Drugs (<code>drugs</code>):</strong></p>
+    <pre><code>meth, lsd, cocaine, cannabis, mdma, heroin, amphetamine, nicotine</code></pre>
+    <p><strong>Chemistry (<code>chemicals</code>):</strong></p>
+    <pre><code>h, na, cl, p, pa, la, me, am, ec, hc</code></pre>
+    <p>Formulas — in <code>config.yml</code> per id.</p>
+
+    <h2 id="faq">Troubleshooting</h2>
+    <h3>Lab exploded</h3>
+    <ul>
+      <li>Match <code>recipe-keys</code> and <code>recipe</code>: length, order, first slot is tagged dried batch, not plain <code>NETHER_WART</code>.</li>
+      <li>For cocaine/tobacco — <code>required-dried-type</code> = <code>cocaine</code> / <code>tobacco</code>.</li>
+      <li>Chemistry must be synthesized (PDC), not a bare snowball.</li>
+    </ul>
+    <h3>Odd behaviour after jar update</h3>
+    <ul>
+      <li>Compare <code>plugins/SPdrug/config.yml</code> with jar/repo (new keys <code>field-herb-*</code>, <code>drug-use.bad-trip-*</code>, etc.).</li>
+    </ul>
+    <h3>Book is outdated</h3>
+    <ul>
+      <li>Get a new one: <kbd>/spdrug give book</kbd> or <kbd>give all</kbd>.</li>
+    </ul>
+
+    <h2 id="license">License and authors</h2>
+    <p><strong>Steepin</strong> · <strong>SteepStudio</strong>. <strong>MIT</strong> — <code>LICENSE</code> in repository root.</p>
+    <p>Balance: edit <code>config.yml</code> and <kbd>/spdrug reload</kbd>.</p>
+
+    <footer>
+      SPdrug · SteepStudio / Steepin · MIT · <a href="PREPARATION.html">Preparation</a> · <a href="WIKI.en.md">WIKI.en.md</a> · <a href="WIKI.html">Русский</a>
+    </footer>
+  </div>
+</body>
+</html>

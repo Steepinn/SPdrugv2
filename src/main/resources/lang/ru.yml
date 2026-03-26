@@ -1,0 +1,192 @@
+# Русский интерфейс — general.language: ru в config.yml, затем /spdrug reload
+
+messages:
+  drying-done: '&6Сушка завершена.'
+  drying-cancelled: '&7Сушка прервана.'
+  drying-busy-or-no-farm: '&cСушка уже идёт или нет теплицы.'
+  drying-need-herb: '&7Возьми растительное сырьё в основную или вторую руку.'
+  drying-minigame-start: '&eСушка: выполняй команды на экране (Shift / F / ПКМ), пока не закончится таймер.'
+  drying-skill-progress: '&aОтлично, шаг засчитан.'
+  drying-skill-fail: '&cСушка сорвана: не хватило стабилизаций. Сырьё возвращено.'
+  lab-register-fail: '&cНе удалось зарегистрировать лабораторию.'
+  lab-placed: '&bЛаборатория установлена.'
+  farm-register-fail: '&cНе удалось зарегистрировать теплицу.'
+  farm-placed: '&aТеплица установлена. Грядка {size}×{size} вокруг компостера.'
+  synthesis-need-reagents: '&cПоложите реагенты по порядку.'
+  synthesis-success: '&aСинтез: &f{count} &a× {name}'
+  synthesis-component-success: '&bПолучен хим-компонент: {name}'
+  synthesis-fail: '&4Неправильная реакция!'
+  synthesis-stir-start: '&eСинтез: перемешивай реактор ЛКМ по лаборатории и удерживай стабильность.'
+  synthesis-focus-fail: '&4Реактор вышел из-под контроля.'
+  synthesis-stir-hit: '&aСтабильность: {value}%'
+  synthesis-stir-status: '&bСтабильность {value}% &7| нужно к финишу: {target}%'
+  synthesis-stir-incomplete: '&4Стабильность не удержана до конца — реакция сорвана.'
+  synthesis-title-main: '&bСинтез в процессе'
+  synthesis-title-sub: '&7Удерживай стабильность ЛКМ по лаборатории'
+  minigame-step-done: '&aШаг выполнен.'
+  minigame-title-main: '&bДействие: &f{key}'
+  minigame-title-sub: '&7{mode} • шаг {step}/{total}'
+  minigame-action-rmb: ПКМ
+  minigame-action-sneak: Shift
+  minigame-action-swap: F
+  minigame-mode-drying: Сушка
+  minigame-mode-synthesis: Синтез
+  lab-exploded: '&cЛаборатория уничтожена реакцией.'
+  field-herb-normal-fern: '&7Это обычный папоротник.'
+  field-herb-watch-status: '&eРост: &f{pct}% &7| &eБуст: {boost} &7| &eТип: &f{type}'
+  field-herb-seed-boosted: '&aУскоренный рост x2 и качество x2 (светокамень).'
+  field-herb-seed-normal: '&7Обычный рост. Для буста поставь светокамень в 2 блоках выше.'
+  field-herb-seeds-found: '&aНайдены особые семена.'
+  field-herb-not-ripe: '&eРастение ещё не созрело: {pct}%'
+  field-herb-seed-need-farmland: '&cСажай семена только на вспаханную землю (грядка).'
+  admin-help:
+  - '&eАдмин SPdrug:'
+  - '&7- &e/spdrug give lab'
+  - '&7- &e/spdrug give farm'
+  - '&7- &e/spdrug give book'
+  - '&7- &e/spdrug give seeds'
+  - '&7- &e/spdrug give raws'
+  - '&7- &e/spdrug give dried'
+  - '&7- &e/spdrug give chemicals'
+  - '&7- &e/spdrug give drugs'
+  - '&7- &e/spdrug give all'
+  - '&7- &e/spdrug give drug <id>'
+  - '&7- &e/spdrug give chemical <id>'
+  - '&7- &e/spdrug reload'
+
+gui:
+  laboratory:
+    title: '&bЛаборатория — химия'
+    synthesis-button:
+      material: LIME_STAINED_GLASS_PANE
+      name: '&aНачать синтез'
+      lore:
+      - '&7Порядок как в рецепте!'
+      - '&4Ошибка — взрыв'
+    hint:
+      material: PAPER
+      name: '&6Подсказка'
+      lore:
+      - '&7Слева направо — рецепт из drugs; можно несколько штук за раз'
+      - '&8Сколько полных наборов — столько препарата; остаток вернётся'
+    border:
+      material: GRAY_STAINED_GLASS_PANE
+    border-empty-name: ' '
+
+bossbar:
+  drying:
+    title: '&6Сушка…'
+    color: YELLOW
+  synthesis:
+    title: '&bСинтез…'
+    color: BLUE
+
+items:
+  lab-placer:
+    name: '&bЛаборатория (установка)'
+    lore:
+    - '&7ПКМ по верху твёрдого блока'
+    - '&8Переработка сушёного сырья'
+  farm-placer:
+    name: '&aТеплица (компостер)'
+    lore:
+    - '&7Ставит компостер — центр грядки'
+    - '&8Пшеница → конопля → сушка → лаборатория'
+  growth-watch:
+    name: '&eАгрочасы'
+    lore:
+    - '&7ПКМ по выращенному папоротнику'
+    - '&8Показывают рост, буст и тип растения'
+  cigarette-empty:
+    name: '&fПустая сигарета'
+    lore:
+    - '&7Сделай табачный продукт и соедини в верстаке'
+  cigarette-loaded:
+    name: '&fСигарета'
+    lore:
+    - '&7Затяжек осталось: {uses}'
+    - '&8ПКМ, чтобы курить'
+  special-seed:
+    cannabis:
+      name: '&aСемена каннабиса'
+      lore:
+      - '&7Только на вспаханную землю; светокамень на +2 блока — буст'
+    cocaine:
+      name: '&fСемена коки'
+      lore:
+      - '&7Только на вспаханную землю; светокамень на +2 блока — буст'
+    tobacco:
+      name: '&6Семена табака'
+      lore:
+      - '&7Только на вспаханную землю; светокамень на +2 блока — буст'
+  herb-raw:
+    name: '&2Конопля'
+    lore:
+    - '&7ПКМ по компостеру-теплице для сушки'
+  herb-raw-types:
+    cannabis:
+      name: '&2Сырьё каннабиса'
+      lore:
+      - '&7Свежий сбор каннабиса'
+    cocaine:
+      name: '&fСырьё коки'
+      lore:
+      - '&7Свежий сбор коки'
+    tobacco:
+      name: '&6Сырьё табака'
+      lore:
+      - '&7Свежий табачный лист'
+  dried-batch:
+    name: '&6Сушёный сбор'
+    lore:
+    - '&7Сырьё для лаборатории (рецепт с dried-batch)'
+  dried-batch-types:
+    cannabis:
+      name: '&2Сушёный каннабис'
+      lore:
+      - '&7Подходит для ветки каннабиса'
+    cocaine:
+      name: '&fСушёная кока'
+      lore:
+      - '&7Подходит для ветки кокаина'
+    tobacco:
+      name: '&6Сушёный табак'
+      lore:
+      - '&7Подходит для табачной ветки'
+  drug:
+    lore:
+    - '&7ПКМ — употребить'
+    - '&8id: {id}'
+
+drug-use:
+  title:
+    main: '&dВы приняли {name}'
+    subtitle: '&8Держитесь…'
+  bad-trip-message: '&7Плохая реакция…'
+  bossbar-title: '&d{name}'
+  overdose:
+    message: '&4Передозировка! Организм не выдерживает.'
+
+commands:
+  no-permission: '&cНет прав (spdrug.admin).'
+  no-book-permission: '&cНет права получить книгу (spdrug.book).'
+  usage: '&e/spdrug book &7| &e/spdrug give <...> &7| &e/spdrug reload'
+  give-lab: '&aВыдан установщик лаборатории.'
+  give-farm: '&aВыдан установщик фермы.'
+  give-book: '&aВыдана книга рецептов.'
+  give-drug: '&aВыдан препарат: {name}'
+  give-chemical: '&aВыдан хим-компонент: {name}'
+  unknown-drug: '&cНеизвестный id препарата.'
+  unknown-chemical: '&cНеизвестный id хим-компонента.'
+  drug-ids-hint: '&eСписок id — ключи в секции drugs в config.yml'
+  chemical-ids-hint: '&eСписок id — ключи в секции chemicals в config.yml'
+  reload-done: '&aКонфиг и рецепты перезагружены.'
+  book-player-only: '&cКнигу может получить только игрок.'
+  give-player-only: '&cКоманда give только для игрока.'
+  player-help-tip: '&7- &e/spdrug book &7— книга рецептов'
+  give-seeds-done: '&aВыданы все особые семена.'
+  give-raws-done: '&aВыданы все типы растительного сырья.'
+  give-dried-done: '&aВыданы все типы сушёного сбора.'
+  give-chemicals-done: '&aВыданы все химические элементы.'
+  give-drugs-done: '&aВыданы все финальные препараты.'
+  give-all-done: '&aВыдан полный набор SPdrug.'

@@ -1,0 +1,19 @@
+name: SPdrug
+version: '${version}'
+main: ru.spdrug.SPdrugPlugin
+api-version: '1.21'
+# Автор: Steepin (SteepStudio). Лицензия: см. файл LICENSE в корне проекта.
+author: Steepin
+authors: [Steepin]
+description: SPdrug — SteepStudio / Steepin. Лаборатория, ферма, препараты.
+commands:
+  spdrug:
+    description: Книга рецептов (всем) и админ-команды
+    usage: /spdrug book | /spdrug give ... | /spdrug reload
+permissions:
+  spdrug.admin:
+    description: Выдача предметов, reload конфига
+    default: op
+  spdrug.book:
+    description: Получить книгу рецептов (/spdrug book или /spdrug give book)
+    default: true

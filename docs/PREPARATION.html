@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPdrug — приготовление препаратов и эффекты</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #3fb950;
+      --warn: #d29922;
+      --border: #30363d;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; font-size: 15px; line-height: 1.55; color: var(--text); background: var(--bg); }
+    .wrap { max-width: 56rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.65rem; margin: 0 0 0.5rem; }
+    .sub { color: var(--muted); margin: 0 0 1.5rem; }
+    h2 { color: var(--accent); font-size: 1.2rem; margin: 2rem 0 0.75rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; color: #58a6ff; }
+    p { margin: 0.5rem 0; }
+    ul { margin: 0.4rem 0; padding-left: 1.25rem; }
+    li { margin: 0.3rem 0; }
+    code, kbd { font-family: ui-monospace, Consolas, monospace; font-size: 0.88em; background: var(--card); padding: 0.1em 0.35em; border-radius: 4px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; margin: 0.6rem 0; font-size: 0.92rem; }
+    th, td { border: 1px solid var(--border); padding: 0.45rem 0.55rem; text-align: left; vertical-align: top; }
+    th { background: var(--card); color: var(--accent); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.15rem; margin: 1rem 0; }
+    .tag { display: inline-block; background: #21262d; color: var(--muted); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.35rem; }
+    .warn { border-left: 3px solid var(--warn); padding-left: 0.85rem; margin: 0.75rem 0; color: var(--muted); }
+    nav { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; margin: 1.25rem 0; }
+    nav a { color: #58a6ff; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.88rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>SPdrug — приготовление и действие препаратов</h1>
+    <p class="sub">Справочник по умолчанию из <code>config.yml</code>. В лаборатории реагенты кладутся <strong>слева направо</strong> строго по порядку. Ошибка рецепта — реактор уничтожается.</p>
+
+    <nav>
+      <strong>Разделы:</strong>
+      <a href="#legend">Обозначения</a> ·
+      <a href="#chain">Цепочка от семян</a> ·
+      <a href="#chem-base">Базовая химия</a> ·
+      <a href="#chem-adv">Составная химия</a> ·
+      <a href="#drugs">Финальные препараты</a> ·
+      <a href="#cig">Сигарета</a>
+    </nav>
+
+    <h2 id="legend">Обозначения</h2>
+    <ul>
+      <li><code>CHEM:id</code> — предмет химии плагина (обычно выглядит как <strong>снежок</strong> с меткой).</li>
+      <li><code>MAT:ИМЯ</code> — обычный предмет Minecraft с таким материалом.</li>
+      <li><strong>Сушёный сбор</strong> — не обычный нарост: предмет с меткой плагина после сушки на теплице. В рецепте материал слота часто <code>NETHER_WART</code>, но нужен именно <strong>сушёный сбор</strong> нужного типа (<code>cannabis</code>, <code>cocaine</code>, <code>tobacco</code>).</li>
+    </ul>
+    <p class="warn">Книгу рецептов в игре можно взять командой <kbd>/spdrug book</kbd> (право <code>spdrug.book</code>, по умолчанию у всех).</p>
+
+    <h2 id="chain">Общая цепочка</h2>
+    <ol>
+      <li>Семена (каннабис / кока / табак) → посадка на землю → папоротник. Светокамень на <strong>+2 блока по Y</strong> над посадкой ускоряет рост и даёт бонус урожая.</li>
+      <li>Сбор → <strong>сырьё</strong> соответствующего типа.</li>
+      <li>Теплица: ПКМ по компостеру с сырьём в руке → <strong>сушка</strong> → <strong>сушёный сбор</strong>.</li>
+      <li>Лаборатория: по шагам крафтить <code>chemicals</code>, затем финальный рецепт из секции <code>drugs</code>.</li>
+    </ol>
+
+    <h2 id="chem-base">Базовая химия (лаборатория)</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>id</th><th>В игре</th><th>Рецепт в реакторе (по порядку)</th></tr></thead>
+        <tbody>
+          <tr><td><code>h</code></td><td>Hydrogen (H)</td><td>Ведро воды → Факел</td></tr>
+          <tr><td><code>na</code></td><td>Sodium (Na)</td><td>Одуванчик → Тростник ×4</td></tr>
+          <tr><td><code>cl</code></td><td>Chlorine (Cl)</td><td>Ламинария → Колба → Факел</td></tr>
+          <tr><td><code>p</code></td><td>Phosphorus (P)</td><td>Костная мука → Редстоун</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="chem-adv">Составная химия</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>id</th><th>В игре</th><th>Рецепт (порядок слотов)</th></tr></thead>
+        <tbody>
+          <tr><td><code>pa</code></td><td>Prolamine Acid (PA)</td><td><code>CHEM:h</code> + <code>CHEM:na</code></td></tr>
+          <tr><td><code>la</code></td><td>Lysergic Acid (LA)</td><td><code>CHEM:na</code> + <code>CHEM:cl</code></td></tr>
+          <tr><td><code>me</code></td><td>Methyl Base (Me)</td><td><code>CHEM:h</code> + Сахар</td></tr>
+          <tr><td><code>am</code></td><td>Amine Base (Am)</td><td><code>CHEM:p</code> + <code>CHEM:h</code></td></tr>
+          <tr><td><code>ec</code></td><td>Ester Core (Ec)</td><td><code>CHEM:na</code> + Мёд в бутылке</td></tr>
+          <tr><td><code>hc</code></td><td>Heavy Compound (Hc)</td><td><code>CHEM:cl</code> + Маринованный паучий глаз</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="drugs">Финальные препараты</h2>
+    <p class="sub">В колонке «Слоты» — что класть в лабораторию слева направо. Уровень эффекта: <strong>I</strong> = amplifier 0.</p>
+
+    <!-- METH -->
+    <div class="card" id="meth">
+      <span class="tag">id: meth</span>
+      <h3>Мефедрон</h3>
+      <p><strong>Приготовление:</strong> без сушёного сбора. Сначала в лаборатории получить <code>me</code>, <code>am</code>, <code>p</code> (см. химию выше), затем в один заход:</p>
+      <p><strong>Слоты:</strong> <code>CHEM:me</code> + <code>CHEM:am</code> + <code>CHEM:p</code> (материалы слотов: редстоун, сахар, светопыль — как в <code>recipe</code> конфига).</p>
+      <p><strong>Плохая реакция:</strong> ~18% (случайный урон, см. <code>drug-use.bad-trip-damage-*</code> в конфиге).</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Ночное зрение</td><td>I</td><td>8</td></tr>
+          <tr><td>+</td><td>Свечение</td><td>I</td><td>10</td></tr>
+          <tr><td>−</td><td>Слабость</td><td>I</td><td>10</td></tr>
+          <tr><td>−</td><td>Голод</td><td>I</td><td>6</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LSD -->
+    <div class="card" id="lsd">
+      <span class="tag">id: lsd</span>
+      <h3>ЛСД</h3>
+      <p><strong>Приготовление:</strong> в лаборатории <code>pa</code> и <code>la</code>, затем слоты: <code>CHEM:pa</code> + <code>CHEM:la</code> (материалы: сахар, пшеница, редстоун).</p>
+      <p><strong>Плохая реакция:</strong> ~22%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Ночное зрение</td><td>I</td><td>16</td></tr>
+          <tr><td>+</td><td>Удача</td><td>I</td><td>28</td></tr>
+          <tr><td>−</td><td>Тошнота</td><td>I</td><td>8</td></tr>
+          <tr><td>−</td><td>Медлительность</td><td>I</td><td>8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- COCAINE -->
+    <div class="card" id="cocaine">
+      <span class="tag">id: cocaine</span>
+      <h3>Кокаин</h3>
+      <p><strong>Приготовление:</strong> вырастить <strong>коку</strong>, сушёный сбор типа <code>cocaine</code>. Химия: <code>hc</code>, <code>am</code>. Финал:</p>
+      <p><strong>Слоты:</strong> <strong>сушёный сбор (cocaine)</strong> + <code>CHEM:hc</code> + <code>CHEM:am</code> (первый слот по типу предмета — как нарост, но только метка плагина).</p>
+      <p><strong>Плохая реакция:</strong> ~25%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Скорость</td><td>I</td><td>5</td></tr>
+          <tr><td>+</td><td>Ночное зрение</td><td>I</td><td>10</td></tr>
+          <tr><td>−</td><td>Слабость</td><td>I</td><td>12</td></tr>
+          <tr><td>−</td><td>Голод</td><td>I</td><td>8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CANNABIS -->
+    <div class="card" id="cannabis">
+      <span class="tag">id: cannabis</span>
+      <h3>Марихуана</h3>
+      <p><strong>Приготовление:</strong> сушёный сбор каннабиса (после роста и сушки). Финал в лаборатории (только материалы, без отдельных CHEM в конфиге):</p>
+      <p><strong>Слоты:</strong> сушёный сбор + сахар + колба (порядок как в <code>recipe</code>).</p>
+      <p><strong>Плохая реакция:</strong> ~20%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Ночное зрение</td><td>I</td><td>10</td></tr>
+          <tr><td>+</td><td>Медленное падение</td><td>I</td><td>6</td></tr>
+          <tr><td>−</td><td>Тошнота</td><td>I</td><td>6</td></tr>
+          <tr><td>−</td><td>Медлительность</td><td>I</td><td>8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MDMA -->
+    <div class="card" id="mdma">
+      <span class="tag">id: mdma</span>
+      <h3>MDMA</h3>
+      <p><strong>Приготовление:</strong> <code>ec</code>, <code>am</code>, <code>na</code>. Слоты: <code>CHEM:ec</code> + <code>CHEM:am</code> + <code>CHEM:na</code> (кварц, светопыль, сахар).</p>
+      <p><strong>Плохая реакция:</strong> ~16%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Скорость</td><td>I</td><td>6</td></tr>
+          <tr><td>+</td><td>Удача</td><td>I</td><td>26</td></tr>
+          <tr><td>−</td><td>Голод</td><td>I</td><td>8</td></tr>
+          <tr><td>−</td><td>Тошнота</td><td>I</td><td>5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- HEROIN -->
+    <div class="card" id="heroin">
+      <span class="tag">id: heroin</span>
+      <h3>Героин</h3>
+      <p><strong>Приготовление:</strong> <code>hc</code> + <code>pa</code>. Слоты: <code>CHEM:hc</code> + <code>CHEM:pa</code> (эндер-жемчуг, маринованный паучий глаз, редстоун).</p>
+      <p><strong>Плохая реакция:</strong> ~30%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Регенерация</td><td>I</td><td>5</td></tr>
+          <tr><td>+</td><td>Медленное падение</td><td>I</td><td>12</td></tr>
+          <tr><td>−</td><td>Тьма</td><td>I</td><td>10</td></tr>
+          <tr><td>−</td><td>Слабость</td><td>I</td><td>12</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- AMPHETAMINE -->
+    <div class="card" id="amphetamine">
+      <span class="tag">id: amphetamine</span>
+      <h3>Амфетамин</h3>
+      <p><strong>Приготовление:</strong> <code>me</code> + <code>ec</code>. Слоты: <code>CHEM:me</code> + <code>CHEM:ec</code> (огненный порошок, мёд в бутылке, редстоун).</p>
+      <p><strong>Плохая реакция:</strong> ~21%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Спешка</td><td>I</td><td>8</td></tr>
+          <tr><td>+</td><td>Ночное зрение</td><td>I</td><td>10</td></tr>
+          <tr><td>−</td><td>Медлительность</td><td>I</td><td>8</td></tr>
+          <tr><td>−</td><td>Голод</td><td>I</td><td>8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- NICOTINE -->
+    <div class="card" id="nicotine">
+      <span class="tag">id: nicotine</span>
+      <h3>Табачный продукт (никотиновая ветка)</h3>
+      <p><strong>Приготовление:</strong> сушёный табак (<code>tobacco</code>). Слоты: сушёный сбор + <code>CHEM:me</code> (нарост-слот только с меткой сушёного табака + бумага во втором материале по конфигу).</p>
+      <p><strong>Плохая реакция:</strong> ~5%.</p>
+      <table>
+        <thead><tr><th>Тип</th><th>Эффект</th><th>Уровень</th><th>Секунды</th></tr></thead>
+        <tbody>
+          <tr><td>+</td><td>Ночное зрение</td><td>I</td><td>4</td></tr>
+          <tr><td>−</td><td>Голод</td><td>I</td><td>6</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="cig">Сигарета</h2>
+    <div class="card">
+      <p>Пустая сигарета крафтится из <strong>3 бумаги в один ряд</strong> (см. <code>crafting.cigarette</code>). Затем в верстаке объединить с <strong>табачным продуктом</strong> (препарат <code>nicotine</code>).</p>
+      <p><strong>Затяжка (ПКМ):</strong> короткий эффект <strong>регенерации I</strong> на <code>cigarette.effect-ticks</code> тиков; число затяжек — <code>cigarette.max-uses</code>.</p>
+    </div>
+
+    <div class="warn">
+      При употреблении любого препарата дополнительно действуют настройки <code>drug-use</code>: титул, боссбар, вспышки слепоты, передоз при частом приёме (<code>drug-use.overdose</code>). Точные числа при смене конфига смотри в своём <code>config.yml</code>.
+    </div>
+
+    <footer>
+      SPdrug · <strong>Steepin</strong> · SteepStudio · MIT (<code>LICENSE</code>) · <a href="WIKI.html">Общая вики</a>
+    </footer>
+  </div>
+</body>
+</html>

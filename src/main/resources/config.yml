@@ -1,0 +1,558 @@
+# SPdrug — edit and reload: /spdrug reload (needs spdrug.admin)
+# Colors in strings: & prefix (e.g. &a green, &c red)
+
+general:
+  # UI language: en (default) | ru — full strings in jar lang/en.yml and lang/ru.yml; this file is fallback / overrides
+  language: en
+  # Радиус (блоки), на котором виден BossBar сушки/синтеза
+  bossbar-show-radius-blocks: 2.5
+
+# Блоки, которые ставятся установщиками (имена Bukkit; должны быть isBlock)
+blocks:
+  laboratory-placed: SMOKER
+  farm-placed: COMPOSTER
+
+# Предметы с метками плагина (имена Bukkit; должны быть предметами, не воздух)
+# Если сменишь dried-batch — поправь recipe в drugs, чтобы 1-й материал совпадал (для экстракта)
+item-materials:
+  lab-placer: BLAZE_ROD
+  farm-placer: GOLDEN_HOE
+  growth-watch: CLOCK
+  cigarette: PAPER
+  herb-raw: DRIED_KELP
+  dried-batch: NETHER_WART
+  finished-drug: SUGAR
+
+# Горизонтальный радиус от компостера: 2 = клетки с |dx|,|dz| ≤ 2 (квадрат 5×5 с центром)
+# Вертикальный допуск по Y от уровня компостера
+farm:
+  horizontal-radius: 2
+  vertical-range: 1
+  drying-duration-ticks: 200
+  # --- Рост папоротника с особых семян (на грядке) ---
+  # Базовое время до созревания (сек); итоговое время = это значение ÷ множитель ниже
+  field-herb-grow-duration-seconds: 60
+  # Чем больше — тем быстрее. 2.0 ≈ в 2 раза быстрее; со светокамнем время ещё делится пополам (как раньше)
+  field-herb-grow-speed-multiplier: 1.0
+  # --- Пшеница в зоне теплицы (рядом с компостером): ускорение ванильных тиков роста, 1.0 = без бонуса
+  greenhouse-wheat-grow-speed-multiplier: 1.0
+  # --- Short/tall grass break: chance (0–100) to drop a special drug seed instead of vanilla wheat seeds
+  grass-break-special-seed-chance-percent: 10.0
+  # Веса типов при выпадении особого семени (любые >0, выбирается пропорционально сумме)
+  grass-break-special-seed-weights:
+    cannabis: 1.0
+    cocaine: 1.0
+    tobacco: 1.0
+
+laboratory:
+  synthesis-duration-ticks: 100
+  explosion-power: 3.5
+  explosion-damage-radius: 6.0
+  explosion-damage-to-source: 6.0
+  explosion-damage-to-others: 10.0
+
+# Бесформенный крафт (любой порядок). Имена материалов Bukkit, например IRON_BLOCK
+crafting:
+  laboratory:
+    ingredients:
+    - IRON_BLOCK
+    - GLASS
+    - BLAZE_POWDER
+    - CAULDRON
+  farm:
+    ingredients:
+    - COMPOSTER
+    - BONE_MEAL
+    - IRON_HOE
+  growth-watch:
+    ingredients:
+    - CLOCK
+    - REDSTONE
+    - GLASS_BOTTLE
+  cigarette:
+    ingredients:
+    - PAPER
+
+messages:
+  drying-done: '&6Drying complete.'
+  drying-cancelled: '&7Drying cancelled.'
+  drying-busy-or-no-farm: '&cDrying already in progress or no greenhouse.'
+  drying-need-herb: '&7Hold plant matter in main or off hand.'
+  drying-minigame-start: '&eDrying: follow on-screen prompts (Shift / F / RMB) until the timer ends.'
+  drying-skill-progress: '&aNice, step counted.'
+  drying-skill-fail: '&cDrying failed: not enough stabilizations. Matter returned.'
+  lab-register-fail: '&cCould not register laboratory.'
+  lab-placed: '&bLaboratory placed.'
+  farm-register-fail: '&cCould not register greenhouse.'
+  farm-placed: '&aGreenhouse placed. Plot {size}×{size} around the composter.'
+  synthesis-need-reagents: '&cPlace reagents in order.'
+  synthesis-success: '&aSynthesis: &f{count} &a× {name}'
+  synthesis-component-success: '&bChemical component obtained: {name}'
+  synthesis-fail: '&4Wrong reaction!'
+  synthesis-stir-start: '&eSynthesis: stir the reactor with LMB on the lab and keep stability.'
+  synthesis-focus-fail: '&4Reactor lost control.'
+  synthesis-stir-hit: '&aStability: {value}%'
+  synthesis-stir-status: '&bStability {value}% &7| need by finish: {target}%'
+  synthesis-stir-incomplete: '&4Stability not held to the end — reaction failed.'
+  synthesis-title-main: '&bSynthesis in progress'
+  synthesis-title-sub: '&7Hold stability with LMB on the lab'
+  minigame-step-done: '&aStep done.'
+  minigame-title-main: '&bAction: &f{key}'
+  minigame-title-sub: '&7{mode} • step {step}/{total}'
+  minigame-action-rmb: RMB
+  minigame-action-sneak: Shift
+  minigame-action-swap: F
+  minigame-mode-drying: Drying
+  minigame-mode-synthesis: Synthesis
+  lab-exploded: '&cLaboratory destroyed by the reaction.'
+  field-herb-normal-fern: '&7This is ordinary fern.'
+  field-herb-watch-status: '&eGrowth: &f{pct}% &7| &eBoost: {boost} &7| &eType: &f{type}'
+  field-herb-seed-boosted: '&aAccelerated growth x2 and quality x2 (glowstone).'
+  field-herb-seed-normal: '&7Normal growth. Place glowstone 2 blocks above for boost.'
+  field-herb-seeds-found: '&aSpecial seeds found.'
+  field-herb-not-ripe: '&ePlant not ripe yet: {pct}%'
+  field-herb-seed-need-farmland: '&cPlant drug seeds only on tilled soil (farmland).'
+  admin-help:
+  - '&eSPdrug admin:'
+  - '&7- &e/spdrug give lab'
+  - '&7- &e/spdrug give farm'
+  - '&7- &e/spdrug give book'
+  - '&7- &e/spdrug give seeds'
+  - '&7- &e/spdrug give raws'
+  - '&7- &e/spdrug give dried'
+  - '&7- &e/spdrug give chemicals'
+  - '&7- &e/spdrug give drugs'
+  - '&7- &e/spdrug give all'
+  - '&7- &e/spdrug give drug <id>'
+  - '&7- &e/spdrug give chemical <id>'
+  - '&7- &e/spdrug reload'
+
+gui:
+  laboratory:
+    title: '&bLaboratory — chemistry'
+    synthesis-button:
+      material: LIME_STAINED_GLASS_PANE
+      name: '&aStart synthesis'
+      lore:
+      - '&7Order as in the recipe!'
+      - '&4Mistake — explosion'
+    hint:
+      material: PAPER
+      name: '&6Hint'
+      lore:
+      - '&7Left to right — recipe from drugs; stacks allowed'
+      - '&8Full sets yield product; remainder returned'
+    border:
+      material: GRAY_STAINED_GLASS_PANE
+    border-empty-name: ' '
+
+bossbar:
+  drying:
+    title: '&6Drying…'
+    color: YELLOW
+  synthesis:
+    title: '&bSynthesis…'
+    color: BLUE
+
+items:
+  lab-placer:
+    name: '&bLaboratory (placer)'
+    lore:
+    - '&7RMB top of a solid block'
+    - '&8Process dried matter'
+  farm-placer:
+    name: '&aGreenhouse (composter)'
+    lore:
+    - '&7Places composter — plot center'
+    - '&8Wheat → hemp → drying → lab'
+  growth-watch:
+    name: '&eGrowth watch'
+    lore:
+    - '&7RMB grown fern'
+    - '&8Shows growth, boost, plant type'
+  cigarette-empty:
+    name: '&fEmpty cigarette'
+    lore:
+    - '&7Make tobacco product and combine in crafting grid'
+  cigarette-loaded:
+    name: '&fCigarette'
+    lore:
+    - '&7Puffs left: {uses}'
+    - '&8RMB to smoke'
+  special-seed:
+    cannabis:
+      name: '&aCannabis seeds'
+      lore:
+      - '&7Farmland only; glowstone +2 blocks above for boost'
+    cocaine:
+      name: '&fCoca seeds'
+      lore:
+      - '&7Farmland only; glowstone +2 blocks above for boost'
+    tobacco:
+      name: '&6Tobacco seeds'
+      lore:
+      - '&7Farmland only; glowstone +2 blocks above for boost'
+  herb-raw:
+    name: '&2Plant matter'
+    lore:
+    - '&7RMB greenhouse composter to dry'
+  herb-raw-types:
+    cannabis:
+      name: '&2Cannabis matter'
+      lore:
+      - '&7Fresh cannabis'
+    cocaine:
+      name: '&fCoca matter'
+      lore:
+      - '&7Fresh coca'
+    tobacco:
+      name: '&6Tobacco leaf'
+      lore:
+      - '&7Fresh tobacco leaf'
+  dried-batch:
+    name: '&6Dried batch'
+    lore:
+    - '&7Lab input (recipe with dried-batch)'
+  dried-batch-types:
+    cannabis:
+      name: '&2Dried cannabis'
+      lore:
+      - '&7For cannabis branch'
+    cocaine:
+      name: '&fDried coca'
+      lore:
+      - '&7For cocaine branch'
+    tobacco:
+      name: '&6Dried tobacco'
+      lore:
+      - '&7For tobacco branch'
+  drug:
+    lore:
+    - '&7RMB — use'
+    - '&8id: {id}'
+
+drug-use:
+  title:
+    main: '&dYou took {name}'
+    subtitle: '&8Hang on…'
+    fade-in-ms: 300
+    stay-ms: 2500
+    fade-out-ms: 400
+  bad-trip-message: '&7Bad reaction…'
+  bad-trip-damage-min: 0.25
+  bad-trip-damage-max: 1.25
+  screen-flash-count: 2
+  screen-flash-interval-ticks: 40
+  bossbar-title: '&d{name}'
+  bossbar-color: PURPLE
+  overdose:
+    enabled: true
+    window-seconds: 120
+    threshold: 3
+    damage: 6.0
+    nausea-seconds: 12
+    weakness-seconds: 18
+    message: '&4Overdose! Your body cannot take it.'
+
+cigarette:
+  max-uses: 5
+  effect-ticks: 50
+
+commands:
+  no-permission: '&cNo permission (spdrug.admin).'
+  no-book-permission: '&cNo permission for book (spdrug.book).'
+  usage: '&e/spdrug book &7| &e/spdrug give <...> &7| &e/spdrug reload'
+  give-lab: '&aLaboratory placer given.'
+  give-farm: '&aFarm placer given.'
+  give-book: '&aRecipe book given.'
+  give-drug: '&aDrug given: {name}'
+  give-chemical: '&aChemical given: {name}'
+  unknown-drug: '&cUnknown drug id.'
+  unknown-chemical: '&cUnknown chemical id.'
+  drug-ids-hint: '&eIds are keys under drugs in config.yml'
+  chemical-ids-hint: '&eIds are keys under chemicals in config.yml'
+  reload-done: '&aConfig and recipes reloaded.'
+  book-player-only: '&cOnly players can get the book.'
+  give-player-only: '&cgive is for players only.'
+  player-help-tip: '&7- &e/spdrug book &7— recipe book'
+  give-seeds-done: '&aAll special seeds given.'
+  give-raws-done: '&aAll plant matter types given.'
+  give-dried-done: '&aAll dried batch types given.'
+  give-chemicals-done: '&aAll chemicals given.'
+  give-drugs-done: '&aAll drugs given.'
+  give-all-done: '&aFull SPdrug kit given.'
+
+# === НАРКОТИКИ (drugs) ===
+# === ХИМ-КОМПОНЕНТЫ (chemicals) ===
+# Все компоненты делаются ТОЛЬКО через лабораторию пошагово.
+# recipe: материалы Bukkit или CHEM:<id_компонента>
+chemicals:
+  h:
+    symbol: H
+    display-name: '&fHydrogen (H)'
+    item-material: SNOWBALL
+    recipe: [WATER_BUCKET, TORCH]
+  na:
+    symbol: Na
+    display-name: '&fSodium (Na)'
+    item-material: SNOWBALL
+    recipe: [DANDELION, SUGAR_CANE, SUGAR_CANE, SUGAR_CANE, SUGAR_CANE]
+  cl:
+    symbol: Cl
+    display-name: '&fChlorine (Cl)'
+    item-material: SNOWBALL
+    recipe: [KELP, GLASS_BOTTLE, TORCH]
+  p:
+    symbol: P
+    display-name: '&fPhosphorus (P)'
+    item-material: SNOWBALL
+    recipe: [BONE_MEAL, REDSTONE]
+  pa:
+    symbol: PA
+    display-name: '&bProlamine Acid (PA)'
+    item-material: SNOWBALL
+    recipe: [CHEM:h, CHEM:na]
+  la:
+    symbol: LA
+    display-name: '&dLysergic Acid (LA)'
+    item-material: SNOWBALL
+    recipe: [CHEM:na, CHEM:cl]
+  me:
+    symbol: Me
+    display-name: '&fMethyl Base (Me)'
+    item-material: SNOWBALL
+    recipe: [CHEM:h, SUGAR]
+  am:
+    symbol: Am
+    display-name: '&fAmine Base (Am)'
+    item-material: SNOWBALL
+    recipe: [CHEM:p, CHEM:h]
+  ec:
+    symbol: Ec
+    display-name: '&fEster Core (Ec)'
+    item-material: SNOWBALL
+    recipe: [CHEM:na, HONEY_BOTTLE]
+  hc:
+    symbol: Hc
+    display-name: '&fHeavy Compound (Hc)'
+    item-material: SNOWBALL
+    recipe: [CHEM:cl, FERMENTED_SPIDER_EYE]
+
+# У КАЖДОГО своё: кристалл — один предмет, тень — другой и т.д.
+# Задаётся строкой Bukkit у своего ключа (meth, cocaine, …), например:
+#   meth:
+#     item-material: GLOWSTONE_DUST
+#   cocaine:
+#     item-material: SUGAR
+# То же самое можно писать как material: или drug-material:
+# Не указал — для этого id берётся общий item-materials.finished-drug
+#
+# Ключ — id препарата (/spdrug give drug <id>)
+# recipe: порядок материалов в слотах лаборатории
+# first-slot-must-be-dried-batch: true — 1-й предмет должен быть «сушёный сбор» (метка плагина)
+# Эффекты: type — как в /effect (speed, regeneration…) или minecraft:speed
+# duration-ticks ИЛИ duration-seconds; amplifier — уровень минус 1 (0 = I)
+drugs:
+  meth:
+    display-name: '&dMephedrone'
+    item-material: QUARTZ
+    recipe: [REDSTONE, SUGAR, GLOWSTONE_DUST]
+    recipe-keys: [CHEM:me, CHEM:am, CHEM:p]
+    first-slot-must-be-dried-batch: false
+    bad-trip-chance: 0.18
+    positive-effects:
+      nv:
+        type: NIGHT_VISION
+        amplifier: 0
+        duration-seconds: 8
+      glow:
+        type: GLOWING
+        amplifier: 0
+        duration-seconds: 10
+    negative-effects:
+      a:
+        type: WEAKNESS
+        amplifier: 0
+        duration-seconds: 10
+      b:
+        type: HUNGER
+        amplifier: 0
+        duration-seconds: 6
+
+  lsd:
+    display-name: '&eLSD'
+    item-material: PAPER
+    recipe: [SUGAR, WHEAT, REDSTONE]
+    recipe-keys: [CHEM:pa, CHEM:la]
+    first-slot-must-be-dried-batch: false
+    bad-trip-chance: 0.22
+    positive-effects:
+      nv:
+        type: NIGHT_VISION
+        amplifier: 0
+        duration-seconds: 16
+      luck:
+        type: LUCK
+        amplifier: 0
+        duration-seconds: 28
+    negative-effects:
+      a:
+        type: NAUSEA
+        amplifier: 0
+        duration-seconds: 8
+      b:
+        type: SLOWNESS
+        amplifier: 0
+        duration-seconds: 8
+
+  cocaine:
+    display-name: '&5Cocaine'
+    item-material: WHITE_DYE
+    recipe: [NETHER_WART, SNOWBALL, SNOWBALL]
+    recipe-keys: [MAT:NETHER_WART, CHEM:hc, CHEM:am]
+    first-slot-must-be-dried-batch: true
+    required-dried-type: cocaine
+    bad-trip-chance: 0.25
+    positive-effects:
+      speed:
+        type: SPEED
+        amplifier: 0
+        duration-seconds: 5
+      nv:
+        type: NIGHT_VISION
+        amplifier: 0
+        duration-seconds: 10
+    negative-effects:
+      a:
+        type: WEAKNESS
+        amplifier: 0
+        duration-seconds: 12
+      b:
+        type: HUNGER
+        amplifier: 0
+        duration-seconds: 8
+
+  cannabis:
+    display-name: '&aCannabis'
+    item-material: FERN
+    recipe:
+    - NETHER_WART
+    - SUGAR
+    - GLASS_BOTTLE
+    first-slot-must-be-dried-batch: true
+    bad-trip-chance: 0.2
+    positive-effects:
+      nv:
+        type: NIGHT_VISION
+        amplifier: 0
+        duration-seconds: 10
+      slowfall:
+        type: SLOW_FALLING
+        amplifier: 0
+        duration-seconds: 6
+    negative-effects:
+      a:
+        type: NAUSEA
+        amplifier: 0
+        duration-seconds: 6
+      b:
+        type: SLOWNESS
+        amplifier: 0
+        duration-seconds: 8
+
+  mdma:
+    display-name: '&bMDMA'
+    item-material: AMETHYST_SHARD
+    recipe: [QUARTZ, GLOWSTONE_DUST, SUGAR]
+    recipe-keys: [CHEM:ec, CHEM:am, CHEM:na]
+    first-slot-must-be-dried-batch: false
+    bad-trip-chance: 0.16
+    positive-effects:
+      speed:
+        type: SPEED
+        amplifier: 0
+        duration-seconds: 6
+      luck:
+        type: LUCK
+        amplifier: 0
+        duration-seconds: 26
+    negative-effects:
+      a:
+        type: HUNGER
+        amplifier: 0
+        duration-seconds: 8
+      b:
+        type: NAUSEA
+        amplifier: 0
+        duration-seconds: 5
+
+  heroin:
+    display-name: '&8Heroin'
+    item-material: TIPPED_ARROW
+    recipe: [ENDER_PEARL, FERMENTED_SPIDER_EYE, REDSTONE]
+    recipe-keys: [CHEM:hc, CHEM:pa]
+    first-slot-must-be-dried-batch: false
+    bad-trip-chance: 0.3
+    positive-effects:
+      regen:
+        type: REGENERATION
+        amplifier: 0
+        duration-seconds: 5
+      slowfall:
+        type: SLOW_FALLING
+        amplifier: 0
+        duration-seconds: 12
+    negative-effects:
+      a:
+        type: DARKNESS
+        amplifier: 0
+        duration-seconds: 10
+      b:
+        type: WEAKNESS
+        amplifier: 0
+        duration-seconds: 12
+
+  amphetamine:
+    display-name: '&6Amphetamine'
+    item-material: LIGHT_GRAY_DYE
+    recipe: [BLAZE_POWDER, HONEY_BOTTLE, REDSTONE]
+    recipe-keys: [CHEM:me, CHEM:ec]
+    first-slot-must-be-dried-batch: false
+    bad-trip-chance: 0.21
+    positive-effects:
+      haste:
+        type: HASTE
+        amplifier: 0
+        duration-seconds: 8
+      nv:
+        type: NIGHT_VISION
+        amplifier: 0
+        duration-seconds: 10
+    negative-effects:
+      a:
+        type: SLOWNESS
+        amplifier: 0
+        duration-seconds: 8
+      b:
+        type: HUNGER
+        amplifier: 0
+        duration-seconds: 8
+
+  nicotine:
+    display-name: '&6Tobacco product'
+    item-material: BROWN_DYE
+    recipe: [NETHER_WART, PAPER]
+    recipe-keys: [MAT:NETHER_WART, CHEM:me]
+    first-slot-must-be-dried-batch: true
+    required-dried-type: tobacco
+    bad-trip-chance: 0.05
+    positive-effects:
+      nv:
+        type: NIGHT_VISION
+        amplifier: 0
+        duration-seconds: 4
+    negative-effects:
+      a:
+        type: HUNGER
+        amplifier: 0
+        duration-seconds: 6

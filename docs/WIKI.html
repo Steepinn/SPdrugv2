@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPdrug — документация</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --text: #e6edf3;
+      --muted: #8b9cb3;
+      --accent: #58a6ff;
+      --border: #30363d;
+      --code-bg: #21262d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--text);
+      background: var(--bg);
+    }
+    .wrap {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      margin: 2.25rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--accent);
+    }
+    h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; }
+    p { margin: 0.65rem 0; }
+    ul, ol { margin: 0.5rem 0; padding-left: 1.35rem; }
+    li { margin: 0.35rem 0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, kbd {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.12em 0.4em;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.88rem;
+    }
+    pre code { border: 0; padding: 0; background: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.92rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--surface); color: var(--accent); font-weight: 600; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+    nav.toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    nav.toc ol { margin: 0; padding-left: 1.25rem; }
+    nav.toc li { margin: 0.3rem 0; }
+    .note {
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0 0.5rem 1rem;
+      margin: 1rem 0;
+      background: rgba(88, 166, 255, 0.06);
+      border-radius: 0 6px 6px 0;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .lang {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      color: var(--muted);
+    }
+    .lang a { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="lang"><a href="WIKI.en.html">English version</a> · <a href="WIKI.en.md">WIKI.en.md</a></p>
+
+    <h1>SPdrug — вики по плагину</h1>
+    <p class="lead">
+      Плагин для <strong>Paper 1.21</strong>: лаборатория (синтез), теплица (сушка), полевые культуры, препараты с эффектами, сигареты.
+      Источник истины — <code>src/main/resources/config.yml</code> и код <code>ru.spdrug</code>.
+    </p>
+    <p class="lead"><strong>Версия jar:</strong> смотри <code>build.gradle</code> (<code>version = …</code>).</p>
+
+    <nav class="toc" aria-label="Содержание">
+      <strong>Содержание</strong>
+      <ol>
+        <li><a href="#install">Требования и установка</a></li>
+        <li><a href="#perms">Права</a></li>
+        <li><a href="#commands">Команды</a></li>
+        <li><a href="#items">Предметы и блоки</a></li>
+        <li><a href="#loop">Игровой цикл</a></li>
+        <li><a href="#lab">Лаборатория</a></li>
+        <li><a href="#farm">Теплица и сушка</a></li>
+        <li><a href="#field">Полевые культуры</a></li>
+        <li><a href="#drugs">Препараты и сигареты</a></li>
+        <li><a href="#config">Конфигурация</a></li>
+        <li><a href="#ids">Справочник id</a></li>
+        <li><a href="#faq">Частые проблемы</a></li>
+        <li><a href="#license">Лицензия и вклад</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="install">Требования и установка</h2>
+    <ul>
+      <li>Сервер: <strong>Paper</strong> (API <strong>1.21</strong>, в проекте <code>paper-api:1.21.1-R0.1-SNAPSHOT</code>).</li>
+      <li><strong>Java 21</strong> (<code>build.gradle</code>).</li>
+      <li>Сборка: в корне проекта <code>gradlew build</code> → <code>build/libs/SPdrug-&lt;версия&gt;.jar</code>.</li>
+      <li>Jar в <code>plugins/</code>, перезапуск сервера.</li>
+      <li>Первый запуск создаёт <code>plugins/SPdrug/config.yml</code>. После правок: <kbd>/spdrug reload</kbd> (нужно <code>spdrug.admin</code>).</li>
+    </ul>
+
+    <h2 id="perms">Права</h2>
+    <table>
+      <thead>
+        <tr><th>Право</th><th>Назначение</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>spdrug.admin</code></td><td><kbd>/spdrug give …</kbd>, <kbd>/spdrug reload</kbd> (по умолчанию OP)</td></tr>
+        <tr><td><code>spdrug.book</code></td><td>Книга: <kbd>/spdrug book</kbd> или <kbd>/spdrug give book</kbd> (по умолчанию у всех)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="commands">Команды</h2>
+    <p><kbd>/spdrug book</kbd> — для любого игрока с <code>spdrug.book</code>. Остальной <kbd>give</kbd> и <kbd>reload</kbd> — только <code>spdrug.admin</code>. Выдача — в инвентарь (лишнее на землю).</p>
+    <p>Рецепты препаратов и таблицы эффектов: <a href="PREPARATION.html">PREPARATION.html</a>.</p>
+    <table>
+      <thead>
+        <tr><th>Команда</th><th>Описание</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>/spdrug reload</kbd></td><td>Перечитать конфиг, рецепты химии и препаратов, крафты.</td></tr>
+        <tr><td><kbd>/spdrug book</kbd></td><td>Книга рецептов (<code>spdrug.book</code> или админ).</td></tr>
+        <tr><td><kbd>/spdrug give lab</kbd></td><td>Установщик лаборатории.</td></tr>
+        <tr><td><kbd>/spdrug give farm</kbd></td><td>Установщик теплицы (компостер + зона).</td></tr>
+        <tr><td><kbd>/spdrug give book</kbd></td><td>То же, что книга (нужно <code>spdrug.book</code> или админ).</td></tr>
+        <tr><td><kbd>/spdrug give seeds</kbd></td><td>Все особые семена.</td></tr>
+        <tr><td><kbd>/spdrug give raws</kbd></td><td>Все типы сырья (<code>items.herb-raw-types</code>).</td></tr>
+        <tr><td><kbd>/spdrug give dried</kbd></td><td>Все сушёные сборы (<code>items.dried-batch-types</code>).</td></tr>
+        <tr><td><kbd>/spdrug give chemicals</kbd></td><td>Вся химия из <code>chemicals</code>.</td></tr>
+        <tr><td><kbd>/spdrug give chemical &lt;id&gt;</kbd></td><td>Один компонент, напр. <code>hc</code>, <code>me</code>.</td></tr>
+        <tr><td><kbd>/spdrug give drugs</kbd></td><td>Все препараты из <code>drugs</code>.</td></tr>
+        <tr><td><kbd>/spdrug give drug &lt;id&gt;</kbd></td><td>Один препарат, напр. <code>meth</code>, <code>cocaine</code>.</td></tr>
+        <tr><td><kbd>/spdrug give all</kbd></td><td>Полный набор для теста.</td></tr>
+      </tbody>
+    </table>
+    <p>Подсказка в игре: <kbd>/spdrug</kbd> без аргументов.</p>
+
+    <h2 id="items">Предметы и блоки</h2>
+    <p>Настройки: <code>blocks.*</code>, <code>item-materials.*</code>, <code>items.*</code> в <code>config.yml</code>.</p>
+    <ul>
+      <li><strong>Лаборатория</strong> — ПКМ по блоку ставит лабораторию (по умолчанию <code>SMOKER</code>), GUI синтеза.</li>
+      <li><strong>Теплица</strong> — компостер + зона <code>farm.horizontal-radius</code>, <code>farm.vertical-range</code>.</li>
+      <li><strong>Агрочасы</strong> — ПКМ по созревшему папоротнику: прогресс и буст.</li>
+      <li><strong>Сырьё / сушёный сбор</strong> — предметы с метками плагина; материалы по умолчанию <code>DRIED_KELP</code> / <code>NETHER_WART</code> должны совпадать с <code>recipe</code> у препаратов с сушкой в первом слоте.</li>
+      <li><strong>Препарат</strong> — ПКМ: эффекты, титул, боссбар, плохая реакция, передоз.</li>
+      <li><strong>Сигарета</strong> — пустая из бумаги, заряд табачным продуктом; затяжка даёт короткий <strong>реген</strong> (<code>cigarette.effect-ticks</code>).</li>
+    </ul>
+
+    <h2 id="loop">Игровой цикл</h2>
+    <ol>
+      <li>Особые семена (трава или <kbd>/spdrug give seeds</kbd>).</li>
+      <li>Посадка на <strong>грядку</strong> (<code>FARMLAND</code>) → папоротник; <strong>светокамень на Y+2</strong> ускоряет и бустит урожай.</li>
+      <li>Слом созревшего → сырьё <code>cannabis</code> / <code>cocaine</code> / <code>tobacco</code>.</li>
+      <li>В зоне теплицы ПКМ по компостеру с сырьём → <strong>сушка</strong> (мини-игра).</li>
+      <li>Сушёный сбор + химия в лаборатории → препарат или промежуточные компоненты.</li>
+    </ol>
+    <p>Пшеница в зоне теплицы при полном возрасте даёт сырьё типа <strong>каннабис</strong> — см. <code>SPdrugListener</code>.</p>
+
+    <h2 id="lab">Лаборатория</h2>
+    <ul>
+      <li>Реагенты <strong>слева направо</strong>, порядок как в рецепте.</li>
+      <li>Матч по <code>recipe-keys</code>: <code>CHEM:&lt;id&gt;</code> (предмет химии) и <code>MAT:MATERIAL</code>.</li>
+      <li><code>first-slot-must-be-dried-batch: true</code> — первый слот только <strong>сушёный сбор плагина</strong>, не обычный предмет того же типа. <code>required-dried-type</code> — тип <code>dried_batch:&lt;тип&gt;</code>.</li>
+      <li><code>recipe</code> — проверка материала в слоте; длина и порядок = как в GUI.</li>
+      <li>После старта — удержание стабильности (ЛКМ по лаборатории). Ошибка или провал → уничтожение лаборатории (<code>laboratory.explosion-*</code>).</li>
+      <li>Несколько полных наборов в слотах → пропорциональный выход, остаток возвращается.</li>
+    </ul>
+
+    <h2 id="farm">Теплица и сушка</h2>
+    <ul>
+      <li>Зона: квадрат вокруг компостера; при <code>horizontal-radius: 2</code> сторона <strong>5</strong>.</li>
+      <li>Сушка: сырьё в основной или второй руке, ПКМ по компостеру; длительность <code>farm.drying-duration-ticks</code>.</li>
+    </ul>
+
+    <h2 id="field">Полевые культуры (семена)</h2>
+    <ul>
+      <li>Посадка <strong>только на грядку</strong> (<code>FARMLAND</code>); иначе <code>messages.field-herb-seed-need-farmland</code>.</li>
+      <li>До <strong>созревания</strong> при ломании падает <strong>1</strong> особое <strong>семя</strong> того же типа (без сырья). В <strong>зрелости</strong> — <strong>1</strong> или <strong>2</strong> сырья при бусте светокамнем.</li>
+      <li>Отдельных предметов без типа нет: пшеница в теплице и запасные пути дают <strong>каннабис</strong>; <kbd>give raws</kbd> / <kbd>give dried</kbd> — только ветки из <code>items.herb-raw-types</code> / <code>items.dried-batch-types</code>.</li>
+      <li><code>farm.field-herb-grow-duration-seconds</code> — базовое время созревания.</li>
+      <li><code>farm.field-herb-grow-speed-multiplier</code> — чем больше, тем быстрее (время ÷ множитель).</li>
+      <li>Светокамень на <strong>Y+2</strong> от посадки — ускорение и бонус к количеству при сборе в зрелости.</li>
+    </ul>
+
+    <h2 id="drugs">Препараты и сигареты</h2>
+    <ul>
+      <li>В <code>drugs</code>: <code>positive-effects</code>, <code>negative-effects</code>, <code>bad-trip-chance</code>; передоз — <code>drug-use.overdose</code>.</li>
+      <li><code>drug-use</code>: титул, боссбар, урон плохой реакции (<code>bad-trip-damage-min/max</code>), вспышки (<code>screen-flash-count</code>, интервал в тиках; <code>0</code> — выкл).</li>
+      <li>Сигарета: <code>cigarette.max-uses</code>, <code>cigarette.effect-ticks</code> — длительность REGENERATION I за затяжку.</li>
+    </ul>
+
+    <h2 id="config">Конфигурация (секции)</h2>
+    <table>
+      <thead>
+        <tr><th>Секция</th><th>Назначение</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>general</code></td><td>BossBar; <code>language</code>: по умолчанию <code>en</code>, для РУ — <code>ru</code> + reload</td></tr>
+        <tr><td><code>blocks</code></td><td>Блоки лаборатории и фермы</td></tr>
+        <tr><td><code>item-materials</code></td><td>Материалы предметов плагина</td></tr>
+        <tr><td><code>farm</code></td><td>Теплица, сушка, рост полевых культур; шанс семени с травы по умолч. 10%</td></tr>
+        <tr><td><code>laboratory</code></td><td>Синтез, взрыв</td></tr>
+        <tr><td><code>crafting</code></td><td>Бесформенный крафт</td></tr>
+        <tr><td><code>messages</code>, <code>gui</code>, <code>bossbar</code>, <code>items</code></td><td>Тексты и GUI</td></tr>
+        <tr><td><code>drug-use</code></td><td>Приём препарата, передоз</td></tr>
+        <tr><td><code>cigarette</code></td><td>Затяжки и тики эффекта</td></tr>
+        <tr><td><code>commands</code></td><td>Сообщения команд</td></tr>
+        <tr><td><code>chemicals</code></td><td>Химия и рецепты</td></tr>
+        <tr><td><code>drugs</code></td><td>Препараты</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Цвета в строках: префикс <code>&amp;</code> как в кодах Minecraft.</p>
+
+    <h2 id="ids">Справочник id</h2>
+    <p><strong>Препараты (<code>drugs</code>):</strong></p>
+    <pre><code>meth, lsd, cocaine, cannabis, mdma, heroin, amphetamine, nicotine</code></pre>
+    <p><strong>Химия (<code>chemicals</code>):</strong></p>
+    <pre><code>h, na, cl, p, pa, la, me, am, ec, hc</code></pre>
+    <p>Формулы — в <code>config.yml</code> у каждого id.</p>
+
+    <h2 id="faq">Частые проблемы</h2>
+    <h3>Лаборатория взорвалась</h3>
+    <ul>
+      <li>Сверь <code>recipe-keys</code> и <code>recipe</code>: длина, порядок, первый слот — сушёный сбор с меткой, не обычный <code>NETHER_WART</code>.</li>
+      <li>Для кокаина/табака — <code>required-dried-type</code> = <code>cocaine</code> / <code>tobacco</code>.</li>
+      <li>Химия должна быть синтезирована (PDC), не «голый» снежок.</li>
+    </ul>
+    <h3>После обновления jar что-то не так</h3>
+    <ul>
+      <li>Сравни <code>plugins/SPdrug/config.yml</code> с версией из jar/репозитория (новые ключи <code>field-herb-*</code>, <code>drug-use.bad-trip-*</code> и др.).</li>
+    </ul>
+    <h3>Книга устарела</h3>
+    <ul>
+      <li>Выдай новую: <kbd>/spdrug give book</kbd> или <kbd>give all</kbd>.</li>
+    </ul>
+
+    <h2 id="license">Лицензия и автор</h2>
+    <p><strong>Steepin</strong> · студия <strong>SteepStudio</strong>. Лицензия <strong>MIT</strong> — файл <code>LICENSE</code> в корне репозитория.</p>
+    <p>Баланс правится в <code>config.yml</code> и <kbd>/spdrug reload</kbd>.</p>
+
+    <footer>
+      SPdrug · SteepStudio / Steepin · MIT · <a href="PREPARATION.html">Приготовление</a> · <a href="WIKI.md">WIKI.md</a> · <a href="WIKI.en.html">English</a>
+    </footer>
+  </div>
+</body>
+</html>
