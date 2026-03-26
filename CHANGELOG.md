@@ -2,6 +2,16 @@
 
 All notable changes to **SPdruG** are documented in this file.
 
+## 1.3.6
+
+### Localization
+- Updated and expanded Russian locale strings in `lang/ru.yml`.
+- Synced locale key usage with `LocaleStrings` so UI/messages resolve correctly from locale files.
+
+### Documentation
+- Updated `docs/WIKI.md` and generated `docs/WIKI.html` with current mechanics/config details.
+- Added English wiki versions: `docs/WIKI.en.md` and `docs/WIKI.en.html`.
+
 ## 1.3.5
 
 - Default **drug `display-name`** values in `config.yml` are **English** (Mephedrone, LSD, Cocaine, Cannabis, Heroin, Amphetamine, Tobacco product; MDMA unchanged).

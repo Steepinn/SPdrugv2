@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: SPdrug
+Implementation-Version: 1.3.6
+Implementation-Vendor: SteepStudio / Steepin
+
