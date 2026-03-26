@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **SPdrug** are documented in this file.
+All notable changes to **SPdruG** are documented in this file.
 
 ## 1.3.5
 
