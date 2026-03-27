@@ -433,7 +433,7 @@ drugs:
         duration-seconds: 8
 
   cannabis:
-    display-name: '&aCannabis'
+    display-name: '&aMarijuana'
     item-material: FERN
     recipe:
     - NETHER_WART
